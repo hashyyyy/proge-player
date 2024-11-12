@@ -1,4 +1,4 @@
-from dearpygui import *
+import dearpygui.dearpygui as dpg
 import player.player as player
 from tkinter import filedialog
 
@@ -22,12 +22,16 @@ def stop_song(sender, data):
     player.stop_song()
 
 def create_gui():
-    with window("Music Player", width=300, height=200):
-        add_text("Music Player")
-        add_button("Load Song", callback=load_song)
-        add_button("Play", callback=play_song)
-        add_button("Pause", callback=pause_song)
-        add_button("Resume", callback=resume_song)
-        add_button("Stop", callback=stop_song)
-        add_label_text("Current Song", default_value="No song loaded")
-    start_dearpygui()
+    dpg.create_context()
+    dpg.create_viewport(title="Music Player", width=300, height=200)
+    with dpg.window(label="Music Player"):
+        dpg.add_text("Music Player")
+        dpg.add_button(label="Load Song", callback=load_song)
+        dpg.add_button(label="Play", callback=play_song)
+        dpg.add_button(label="Pause", callback=pause_song)
+        dpg.add_button(label="Resume", callback=resume_song)
+        dpg.add_button(label="Stop", callback=stop_song)
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
+    dpg.start_dearpygui()
+    dpg.destroy_context()
