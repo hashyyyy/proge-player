@@ -1,6 +1,6 @@
 main_window = {
     'width': 600,
-    'height': 300,
+    'height': 200,
     'show': True,
     'no_resize': True,
     'no_scrollbar': True,

@@ -3,7 +3,7 @@ import pygame, os
 #Kasutame pygame'i, mis ei ole võibolla kõige optimaalsem, aga meile on loodetavasti piisav.
 pygame.mixer.init()
 
-current_playlist=["ungabunga"]
+current_playlist=[""]
 volume = 0.0
 current_song = None
 playing = True
