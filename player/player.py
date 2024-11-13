@@ -1,18 +1,40 @@
-import pygame
+import pygame, os
 
 #Kasutame pygame'i, mis ei ole võibolla kõige optimaalsem, aga meile on loodetavasti piisav.
 pygame.mixer.init()
 
+current_playlist=["ungabunga"]
 volume = 0.0
 current_song = None
+playing = True
 
 def load_song(song_path):
     global current_song
     pygame.mixer.music.load(song_path)
     current_song = song_path
+    pygame.mixer.music.play()
+
+def add_to_current_playlist(song_path):
+    global current_playlist
+    current_playlist.append(str(song_path).split("/")[-1])
+
+def save_playlist(name):
+    global current_playlist
+    p = str(os.getcwd() + f"\player\playlists\{name}.txt")
+    with open(p, "w", encoding="UTF-8") as f:
+        for i in current_playlist:
+            f.write(i + "\n")
+    f.close()
+
 
 def play_song():
-    pygame.mixer.music.play()
+    global playing
+    if not playing:
+        pygame.mixer.music.unpause()
+        playing=True
+    else:
+        pygame.mixer.music.pause()
+        playing=False
 
 def pause_song():
     pygame.mixer.music.pause()
