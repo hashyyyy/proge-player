@@ -3,7 +3,7 @@ import pygame, os
 #Kasutame pygame'i, mis ei ole võibolla kõige optimaalsem, aga meile on loodetavasti piisav.
 pygame.mixer.init()
 
-current_playlist=[""]
+current_playlist=[]
 volume = 0.0
 current_song = None
 playing = True
@@ -19,13 +19,13 @@ def add_to_current_playlist(song_path):
     current_playlist.append(str(song_path).split("/")[-1])
 
 def save_playlist(name):
+    #Salvestab playlisti faili laulude nimed, et playliste salvestada.
     global current_playlist
     p = str(os.getcwd() + f"\player\playlists\{name}.txt")
     with open(p, "w", encoding="UTF-8") as f:
         for i in current_playlist:
             f.write(i + "\n")
     f.close()
-
 
 def play_song():
     global playing
