@@ -2,6 +2,8 @@ import dearpygui.dearpygui as dpg
 import player.player as player
 from tkinter import filedialog
 
+# kasutame tkinteri filedialogi et lasta kasutajal mangitav fail valida
+
 def load_song(sender, data):
     song_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
     if song_path:
@@ -34,4 +36,3 @@ def create_gui():
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
-    dpg.destroy_context()
