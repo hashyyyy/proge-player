@@ -1,5 +1,6 @@
 import pygame
 
+#Kasutame pygame'i, mis ei ole võibolla kõige optimaalsem, aga meile on loodetavasti piisav.
 pygame.mixer.init()
 
 current_song = None
