@@ -21,13 +21,13 @@ def volume_up():
      global volume
      if volume <= 1.0:
           volume += 0.1
-          pygame.mixer.set_volume(volume)
+          pygame.mixer.music.set_volume(volume)
     
 def volume_down():
      global volume
      if volume >= 0.0:
           volume -= 0.1
-          pygame.mixer.set_volume(volume)
+          pygame.mixer.music.set_volume(volume)
 
 def resume_song():
     pygame.mixer.music.unpause()
