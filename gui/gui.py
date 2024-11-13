@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 import player.player as player
 from tkinter import filedialog
+import gui.config as config
 
 # kasutame tkinteri filedialogi et lasta kasutajal mangitav fail valida
 
@@ -35,16 +36,22 @@ def save_playlist():
 
 
 def create_gui():
+    window_height = 200
+    window_width = 600
+
     dpg.create_context()
-    dpg.create_viewport(title="Music Player", width=300, height=200)
-    with dpg.window(label="Music Player"):
-        dpg.add_text("Music Player")
+    with dpg.window(label="Music Player", **config.main_window):
         dpg.add_button(label="Load Song", callback=load_song)
-        dpg.add_button(label="Play/Pause", callback=player.play_song)
-        dpg.add_button(label="Stop", callback=player.stop_song)
         dpg.add_button(label="Volume Up", callback=player.volume_up)
         dpg.add_button(label="Volume Down", callback=player.volume_down)
         dpg.add_button(label="Playlister", callback=edit_playlist)
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Skip", pos=[0, window_height], **config.button)
+            dpg.add_button(label="Play/Pause", pos=[window_width/2 -50, window_height], **config.play_button, callback=player.play_song)
+            dpg.add_button(label="Skip", pos=[window_width - 50, window_height], **config.button)
+    
+    dpg.create_viewport(title="Music Player", width=window_width, height=window_height)
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
+
