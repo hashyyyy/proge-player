@@ -8,7 +8,7 @@ def load_song(sender, data):
     song_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
     if song_path:
         player.load_song(song_path)
-        set_value("Current Song", f"Loaded: {player.get_current_song()}")
+        #dpg.set_value("Current Song", f"Loaded: {player.get_current_song()}")
         player.play_song()
 
 def play_song(sender, data):
