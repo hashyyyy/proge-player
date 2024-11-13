@@ -46,9 +46,9 @@ def create_gui():
         dpg.add_button(label="Volume Down", callback=player.volume_down)
         dpg.add_button(label="Playlister", callback=edit_playlist)
         with dpg.group(horizontal=True):
-            dpg.add_button(label="Skip", pos=[0, window_height], **config.button)
-            dpg.add_button(label="Play/Pause", pos=[window_width/2 -50, window_height], **config.play_button, callback=player.play_song)
-            dpg.add_button(label="Skip", pos=[window_width - 50, window_height], **config.button)
+            dpg.add_button(label="Skip", pos=[0, window_height - 100], **config.button)
+            dpg.add_button(label="Play/Pause", pos=[window_width/2 -50, window_height - 100], **config.play_button, callback=player.play_song)
+            dpg.add_button(label="Skip", pos=[window_width - 50, window_height - 100], **config.button)
     
     dpg.create_viewport(title="Music Player", width=window_width, height=window_height)
     dpg.setup_dearpygui()
