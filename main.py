@@ -22,8 +22,9 @@
 # 
 # Jooksuta main.py fail
 ##################################################
-
 import gui.gui as gui
+rendered = False
+
 
 if __name__ == "__main__":
-    gui.create_gui()
+   gui.create_gui()
