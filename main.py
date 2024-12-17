@@ -23,8 +23,11 @@
 # Jooksuta main.py fail
 ##################################################
 import gui.gui as gui
-rendered = False
-
+import player.player as player
+import threading
 
 if __name__ == "__main__":
+   # Loob uue threadi, et paralleelselt gui haldamisega mängida playlistist lugusid
+   threading.Thread(target=player.is_playing, daemon=True).start()
+   
    gui.create_gui()
