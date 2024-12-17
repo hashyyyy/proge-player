@@ -20,6 +20,8 @@ button = {
 }
 
 play_button = {
-    'width': 100,
+    'width': 120,
     'height': 50
 }
+
+

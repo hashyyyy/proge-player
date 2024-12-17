@@ -13,7 +13,7 @@ playing = True
 
 def get_playlists():
     playlists = []
-    path = str(os.getcwd() + f"\player\playlists\\")
+    path = os.path.join(os.getcwd(), "player", "playlists")
     for playlist in os.listdir(path):
         playlists.append(playlist)
     return playlists
@@ -21,7 +21,8 @@ def get_playlists():
 def select_playlist(name):
     global active_playlist
     active_playlist = []
-    path = str(os.getcwd() + f"\player\playlists\{name}.txt")
+    current_dir = os.getcwd()
+    path = os.path.join(current_dir, "player", "playlists", f"{name}.txt")
     for i in open(path, "r", encoding="UTF-8").readlines():
         active_playlist.append(i.strip())
     random.shuffle(active_playlist)
@@ -59,17 +60,9 @@ def play_song():
 def pause_song():
     pygame.mixer.music.pause()
 
-def volume_up():
-     global volume
-     if volume <= 1.0:
-          volume += 0.1
-          pygame.mixer.music.set_volume(volume)
-    
-def volume_down():
-     global volume
-     if volume >= 0.0:
-          volume -= 0.1
-          pygame.mixer.music.set_volume(volume)
+def update_volume(sender, app_data, user_data):
+    volume = app_data / 100.0
+    pygame.mixer.music.set_volume(volume)
 
 def resume_song():
     pygame.mixer.music.unpause()
