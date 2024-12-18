@@ -17,7 +17,7 @@ main_window = {
 
 window = {
     "width": 200,
-    "height": 200,
+    "height": 193,
     "show": False,
     "no_resize": True,
     "autosize": False,
@@ -29,6 +29,6 @@ window = {
 
 text = {}
 
-button = {"width": 50, "height": 50}
+button = {"width": 70, "height": 30}
 
 play_button = {"width": 120, "height": 50}

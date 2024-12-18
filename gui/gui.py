@@ -39,51 +39,66 @@ def create_elements():
             player.clear_playlist(),
             dpg.set_value("playlist_songs", value=""),
         ),
+        pos=[7, 8],
     ):
-        dpg.add_text("Music Player")
-        dpg.add_button(label="Load Song", callback=add_to_playlist)
-        dpg.add_button(label="Save playlist", callback=save_playlist)
-        for i in player.new_playlist:
-            dpg.add_text(i)
-        dpg.add_text("", tag="playlist_songs")
+        with dpg.group(tag="create_playlist_choices"):
+            dpg.add_button(label="Load Song", callback=add_to_playlist)
+            dpg.add_button(label="Save playlist", callback=save_playlist)
+            for i in player.new_playlist:
+                dpg.add_text(i)
+
+        dpg.bind_item_theme("create_playlist_choices", "button_theme")
+        
+    dpg.add_text("", tag="playlist_songs")
+    dpg.bind_item_theme("create_playlist", "menu_theme")
 
     with dpg.window(
         label="Load playlist",
         tag="load_playlist",
         **config.window,
+        pos=[7, 8]
     ):
-        playlists = player.get_playlists()
-        for i in playlists:
-            name = i.replace(".txt", "")
+        with dpg.group(tag="playlist_choices"):
+            playlists = player.get_playlists()
+            for i in playlists:
+                name = i.replace(".txt", "")
+                dpg.add_button(
+                    label=name,
+                    callback=lambda sender: (
+                        player.select_playlist(dpg.get_item_label(sender)),
+                        dpg.hide_item("load_playlist"),
+                    ),
+                )
+    dpg.bind_item_theme("playlist_choices", "button_theme")
+    dpg.bind_item_theme("load_playlist", "menu_theme")
+
+    with dpg.window(label="Save playlist", tag="save_playlist", **config.window, pos=[7, 8]):
+        input_text_tag = dpg.add_input_text(label="")
+        with dpg.group(tag="save_playlist_choices"):
             dpg.add_button(
-                label=name,
-                callback=lambda sender: (
-                    player.select_playlist(dpg.get_item_label(sender)),
-                    dpg.hide_item("load_playlist"),
+                label="Submit",
+                callback=lambda: (
+                    player.save_playlist(str(dpg.get_value(input_text_tag))),
+                    dpg.hide_item("save_playlist"),
+                    dpg.hide_item("create_playlist"),
                 ),
             )
-
-    with dpg.window(label="Save playlist", tag="save_playlist", **config.window):
-        input_text_tag = dpg.add_input_text(label="Enter name here:")
-        dpg.add_button(
-            label="Submit",
-            callback=lambda: (
-                player.save_playlist(str(dpg.get_value(input_text_tag))),
-                dpg.hide_item("save_playlist"),
-                dpg.hide_item("create_playlist"),
-            ),
-        )
+        dpg.bind_item_theme("save_playlist_choices", "button_theme")
+    dpg.bind_item_theme("save_playlist", "menu_theme")
 
     with dpg.window(
-        label="Menu",
+        label="···",
         tag="menu",
         **config.window,
+        pos=[7, 8],
     ):
+
         with dpg.group(tag="vertical-buttons"):
             dpg.bind_item_theme("vertical-buttons", "button_theme")
             dpg.add_button(label="Load Song", callback=load_song)
             dpg.add_button(label="Load playlist", callback=load_playlist)
-            dpg.add_button(label="Create a playlist", callback=create_playlist)
+            dpg.add_button(label="Create playlist", callback=create_playlist)
+    dpg.bind_item_theme("menu", "menu_theme")
 
 
 def create_playlist():
@@ -223,10 +238,10 @@ def play_pressed():
     print(player.current_song)
     if player.current_song:
         player.play_song()
-        if dpg.get_item_label("play_button") == "Play":
-            dpg.set_item_label("play_button", "Stop")
+        if dpg.get_item_label("play_button") == "[play]]":
+            dpg.set_item_label("play_button", "[stop]")
         else:
-            dpg.set_item_label("play_button", "Play")
+            dpg.set_item_label("play_button", "[play]")
 
 
 def move_text(title):
@@ -252,7 +267,7 @@ def create_gui():
     style.load_themes()
 
     # LOAD IMAGE
-    image_path = os.path.join(os.getcwd(), "gui", "images", "volume.png")
+    image_path = os.path.join(os.getcwd(), "gui", "images", "volume5.png")
 
     if not os.path.isfile(image_path):
         print("ERROR: Couldn't find the image")
@@ -275,7 +290,11 @@ def create_gui():
         # bind theme to window
         dpg.bind_item_theme(main_window, "app_theme")
 
-        dpg.add_button(label="Menu", tag="open_menu", callback=open_menu)
+        with dpg.group(horizontal=True, tag="closed_menu"):
+            dpg.add_button(label="···", callback=open_menu)
+
+        # bind theme to menu
+        dpg.bind_item_theme("closed_menu", "closed_menu_theme")
 
         title = dpg.add_text(
             tag="playing_song",
@@ -286,21 +305,21 @@ def create_gui():
         with dpg.group(horizontal=True, tag="buttons"):
             dpg.bind_item_theme("buttons", "button_theme")
             dpg.add_button(
-                label="Skip",
-                pos=[8, window_height - 60],
+                label="[skip]",
+                pos=[8, window_height - 50],
                 **config.button,
                 callback=player.skip_song,
             )
             dpg.add_button(
-                label="Play",
+                label="[stop]",
                 pos=[window_width / 2 - 60, window_height - 60],
                 **config.play_button,
                 callback=play_pressed,
                 tag="play_button",
             )
             dpg.add_button(
-                label="Skip",
-                pos=[window_width - 58, window_height - 60],
+                label="[skip]",
+                pos=[window_width - 78, window_height - 50],
                 **config.button,
                 callback=player.skip_song,
             )
@@ -343,7 +362,7 @@ def create_gui():
     font_path = os.path.join(script_dir, "0xProtoNerdFontPropo-Regular.ttf")
 
     with dpg.font_registry():
-        default_font = dpg.add_font(font_path, 20)
+        default_font = dpg.add_font(font_path, 18)
     window_height, window_width = (
         config.main_window["height"],
         config.main_window["width"] + 16,
