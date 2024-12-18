@@ -16,16 +16,15 @@ main_window = {
 }
 
 window = {
-    "width": 150,
+    "width": 200,
     "height": 200,
     "show": False,
     "no_resize": True,
-    "no_scrollbar": True,
     "autosize": False,
     "horizontal_scrollbar": False,
     "no_move": True,
     "no_scroll_with_mouse": True,
-    # "modal":True
+    "no_collapse":True
 }
 
 text = {}

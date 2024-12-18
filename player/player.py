@@ -12,7 +12,7 @@ new_playlist = []
 active_playlist = []
 volume = 0.0
 current_song = ""
-playing = False
+playing = True
 
 
 def clear_playlist():
@@ -68,6 +68,7 @@ def play_song():
         pygame.mixer.music.unpause()
         playing = True
     else:
+        print("asds")
         pygame.mixer.music.pause()
         playing = False
 
@@ -88,6 +89,7 @@ def is_playing():
     while True:
         if not current_song and active_playlist:
             current_song = active_playlist.pop()
+            print(current_song)
             load_song(os.path.join(os.getcwd(), "music", f"{current_song}"))
         else:
             time.sleep(0.01)

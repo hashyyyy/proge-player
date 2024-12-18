@@ -5,6 +5,7 @@ import gui.config as config
 import gui.style as style
 import os
 import json
+import time
 
 # kasutame tkinteri filedialogi et lasta kasutajal mangitav fail valida
 
@@ -26,11 +27,10 @@ def add_to_playlist():
     if song_path:
         player.add_to_new_playlist(song_path)
         dpg.set_value("playlist_songs", value="\n".join(player.new_playlist))
-        # dpg.hide_item("playlist_window")
-        # create_playlist()
 
 
 def create_elements():
+    #loob vajaminevad elemendid ja peidab need alguses nahtavusest
     with dpg.window(
         label="Create Playlist",
         tag="create_playlist",
@@ -40,7 +40,6 @@ def create_elements():
             dpg.set_value("playlist_songs", value=""),
         ),
     ):
-        # dpg.render_dearpygui_frame()
         dpg.add_text("Music Player")
         dpg.add_button(label="Load Song", callback=add_to_playlist)
         dpg.add_button(label="Save playlist", callback=save_playlist)
@@ -80,7 +79,6 @@ def create_elements():
         tag="menu",
         **config.window,
     ):
-        # dpg.render_dearpygui_frame()
         with dpg.group(tag="vertical-buttons"):
             dpg.bind_item_theme("vertical-buttons", "button_theme")
             dpg.add_button(label="Load Song", callback=load_song)
@@ -89,21 +87,27 @@ def create_elements():
 
 
 def create_playlist():
+    # alguses itemid peidetakse ja tuuakse siis uuesti nahtavale et oleks kindel, nad kuhugi ara ei kao.
     dpg.hide_item("create_playlist")
+    time.sleep(0.1)
     dpg.show_item("create_playlist")
-    dpg.hide_item("menu")
 
 
 def load_playlist():
+    dpg.hide_item("load_playlist")
+    time.sleep(0.1)
     dpg.show_item("load_playlist")
-    dpg.hide_item("menu")
 
 
 def save_playlist():
+    dpg.hide_item("save_playlist")
+    time.sleep(0.1)
     dpg.show_item("save_playlist")
 
 
 def open_menu():
+    dpg.hide_item("menu")
+    time.sleep(0.1)
     dpg.show_item("menu")
 
 
@@ -216,6 +220,7 @@ def update_song_name(name):
 
 
 def play_pressed():
+    print(player.current_song)
     if player.current_song:
         player.play_song()
         if dpg.get_item_label("play_button") == "Play":
@@ -223,18 +228,21 @@ def play_pressed():
         else:
             dpg.set_item_label("play_button", "Play")
 
+
 def move_text(title):
-    current_song = player.current_song
-    curr_x, curr_y = dpg.get_item_pos(title)
-    window_width = config.main_window["width"]
-    text_width = len(current_song)
+    if player.current_song:
+        current_song = player.current_song
+        curr_x, curr_y = dpg.get_item_pos(title)
+        window_width = config.main_window["width"]
+        text_width = len(current_song)
 
-    new_x = curr_x + 1
+        new_x = curr_x + 1
 
-    if new_x > window_width:
-        new_x = 0 - text_width * 10
+        if new_x > window_width:
+            new_x = 0 - text_width * 10
 
-    dpg.set_item_pos(title, (new_x, curr_y))
+        dpg.set_item_pos(title, (new_x, curr_y))
+
 
 def create_gui():
     # start of the gen
@@ -347,11 +355,12 @@ def create_gui():
     )
     dpg.setup_dearpygui()
     dpg.show_viewport()
-    #dpg.start_dearpygui()
+    # dpg.start_dearpygui()
 
     while dpg.is_dearpygui_running():
         move_text(title)
 
         dpg.render_dearpygui_frame()
+
 
 dpg.destroy_context()
