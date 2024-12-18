@@ -89,20 +89,29 @@ def save_playlist():
 
 
 def expand_slider():
-    dpg.configure_item("volume_slider", width=200)
-    dpg.configure_item("volume_slider", height=20)
+    dpg.configure_item("volume_slider", width=25)
+    dpg.configure_item("volume_slider", height=100)
+    dpg.configure_item("volume_slider", show=True)
 
 
 def contract_slider():
-    dpg.configure_item("volume_slider", width=20)
-    dpg.configure_item("volume_slider", height=20)
+    dpg.configure_item("volume_slider", width=0)
+    dpg.configure_item("volume_slider", height=0)
+    dpg.configure_item("volume_slider", show=False)
 
+def hide_volume():
+    dpg.configure_item("volume_icon", show=False)
+
+def show_volume():
+    dpg.configure_item("volume_icon", show=True)
 
 def check_hover():
-    if dpg.is_item_hovered("volume_slider"):
+    if dpg.is_item_hovered("volume_icon") or dpg.is_item_hovered("volume_slider"):
         expand_slider()
+        hide_volume()
     else:
         contract_slider()
+        show_volume()
 
 
 # COLOR SCHEME
@@ -210,6 +219,20 @@ def create_gui():
     # COLORS AND STUFF
 
     style.load_themes()
+
+    # LOAD IMAGE
+    image_path = os.path.join(os.getcwd(), "gui", "images", "volume.png")
+
+    if not os.path.isfile(image_path):
+        print("ERROR: Couldn't find the image")
+
+    width, height, channels, data = dpg.load_image(image_path)
+
+    # TEXTURE IMAGE STUFF
+
+    with dpg.texture_registry():
+        dpg.add_static_texture(width, height, data, tag="volume_icon_texture")
+
     # WINDOW CREATION STUFF
 
     with dpg.window(label="Music Player", **config.main_window) as main_window:
@@ -217,48 +240,67 @@ def create_gui():
             config.main_window["height"],
             config.main_window["width"],
         )
+
+        # bind theme to window
         dpg.bind_item_theme(main_window, "app_theme")
+
         dpg.add_button(label="Menu", tag="open_menu", callback=open_menu)
         dpg.add_text(
-            tag="playing_song", default_value=player.current_song, **config.text
+            tag="playing_song", 
+            default_value=player.current_song, 
+            **config.text,
+            pos=[10, window_height / 2],
         )
         with dpg.group(horizontal=True, tag="buttons"):
             dpg.bind_item_theme("buttons", "button_theme")
             dpg.add_button(
                 label="Skip",
-                pos=[8, window_height - 100],
+                pos=[8, window_height - 60],
                 **config.button,
                 callback=player.skip_song,
             )
             dpg.add_button(
                 label="Play/Pause",
-                pos=[window_width / 2 - 70, window_height - 100],
+                pos=[window_width / 2 - 70, window_height - 60],
                 **config.play_button,
                 callback=player.play_song,
             )
             dpg.add_button(
                 label="Skip",
-                pos=[window_width - 58, window_height - 100],
+                pos=[window_width - 58, window_height - 60],
                 **config.button,
                 callback=player.skip_song,
             )
 
         default_volume = 5
         player.update_volume("", default_volume, "")
+
         slider = dpg.add_slider_int(
-            label="Volume (hover)",
+            label="",
+            pos=[window_width - 33, 8],
             min_value=0,
             max_value=100,
             default_value=default_volume,
             callback=player.update_volume,
-            width=20,
+            width=0,
             tag="volume_slider",
+            show=False,
+            vertical=True,
+            format="",
+        )
+
+        dpg.bind_item_theme(slider, "slider_theme")
+
+        volume_icon = dpg.add_image(
+            "volume_icon_texture", 
+            tag="volume_icon",
+            pos=[window_width - 33, 8],
         )
 
         with dpg.handler_registry():
             dpg.add_mouse_move_handler(callback=lambda: check_hover())
 
-    dpg.bind_item_handler_registry(slider, "slider_handler")
+    dpg.bind_item_handler_registry(volume_icon, "slider_handler")
 
     # FONT STUFF
 
@@ -267,9 +309,10 @@ def create_gui():
 
     with dpg.font_registry():
         default_font = dpg.add_font(font_path, 20)
+
     window_height, window_width = (
-        config.main_window["height"] + 10,
-        config.main_window["width"] + 10,
+        config.main_window["height"],
+        config.main_window["width"] + 16,
     )
 
     dpg.bind_font(default_font)
