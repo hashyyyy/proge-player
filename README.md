@@ -1,5 +1,5 @@
 # proge-player
-Lihtne muusikamängija programm
+Lihtne muusikamängija programm.
 Playliste saab luua ainult music kaustas olevatest failidest!
 
 HINDAJALE:
