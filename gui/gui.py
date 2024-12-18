@@ -9,10 +9,6 @@ import json
 # kasutame tkinteri filedialogi et lasta kasutajal mangitav fail valida
 
 
-def delete_window_callback(sender):
-    dpg.delete_item(sender)
-
-
 def load_song(sender, data):
     initial = str(os.getcwd() + f"\music\\")
     song_path = filedialog.askopenfilename(
@@ -22,40 +18,37 @@ def load_song(sender, data):
         player.load_song(song_path)
 
 
-def add_to_playlist(sender, data):
+def add_to_playlist():
     initial = str(os.getcwd() + f"\music\\")
     song_path = filedialog.askopenfilename(
         initialdir=initial, filetypes=[("MP3 files", "*.mp3")]
     )
     if song_path:
         player.add_to_new_playlist(song_path)
-        dpg.delete_item("playlist_window")
-        edit_playlist()
+        dpg.set_value("playlist_songs", value="\n".join(player.new_playlist))
+        # dpg.hide_item("playlist_window")
+        # create_playlist()
 
 
-def edit_playlist():
+def create_elements():
     with dpg.window(
         label="Create Playlist",
-        tag="playlist_window",
-        width=200,
-        height=200,
-        on_close=delete_window_callback,
+        tag="create_playlist",
+        **config.window,
+        on_close=lambda: (player.clear_playlist(), dpg.set_value("playlist_songs", value="")),
     ):
-        dpg.render_dearpygui_frame()
+        # dpg.render_dearpygui_frame()
         dpg.add_text("Music Player")
         dpg.add_button(label="Load Song", callback=add_to_playlist)
         dpg.add_button(label="Save playlist", callback=save_playlist)
         for i in player.new_playlist:
             dpg.add_text(i)
+        dpg.add_text("", tag="playlist_songs")
 
-
-def load_playlist():
     with dpg.window(
         label="Load playlist",
         tag="load_playlist",
-        width=200,
-        height=200,
-        on_close=delete_window_callback,
+        **config.window,
     ):
         playlists = player.get_playlists()
         for i in playlists:
@@ -64,28 +57,51 @@ def load_playlist():
                 label=name,
                 callback=lambda sender: (
                     player.select_playlist(dpg.get_item_label(sender)),
-                    dpg.delete_item("load_playlist"),
+                    dpg.hide_item("load_playlist"),
                 ),
             )
 
-
-def save_playlist():
-    with dpg.window(
-        label="Save playlist",
-        tag="textbox_window",
-        width=200,
-        height=200,
-        on_close=delete_window_callback,
-    ):
+    with dpg.window(label="Save playlist", tag="save_playlist", **config.window):
         input_text_tag = dpg.add_input_text(label="Enter name here:")
         dpg.add_button(
             label="Submit",
             callback=lambda: (
                 player.save_playlist(str(dpg.get_value(input_text_tag))),
-                dpg.delete_item("textbox_window"),
-                dpg.delete_item("playlist_window"),
+                dpg.hide_item("save_playlist"),
+                dpg.hide_item("create_playlist"),
             ),
         )
+
+    with dpg.window(
+        label="Menu",
+        tag="menu",
+        **config.window,
+    ):
+        # dpg.render_dearpygui_frame()
+        with dpg.group(tag="vertical-buttons"):
+            dpg.bind_item_theme("vertical-buttons", "button_theme")
+            dpg.add_button(label="Load Song", callback=load_song)
+            dpg.add_button(label="Load playlist", callback=load_playlist)
+            dpg.add_button(label="Create a playlist", callback=create_playlist)
+
+
+def create_playlist():
+    dpg.hide_item("create_playlist")
+    dpg.show_item("create_playlist")
+    dpg.hide_item("menu")
+
+
+def load_playlist():
+    dpg.show_item("load_playlist")
+    dpg.hide_item("menu")
+
+
+def save_playlist():
+    dpg.show_item("save_playlist")
+
+
+def open_menu():
+    dpg.show_item("menu")
 
 
 def expand_slider():
@@ -125,25 +141,6 @@ def load_color_scheme():
     else:
         color_scheme = default_colors
     return color_scheme
-
-
-def open_menu():
-    with dpg.window(
-        label="Menu",
-        tag="playlist_window",
-        width=200,
-        height=200,
-        on_close=delete_window_callback,
-    ):
-        dpg.render_dearpygui_frame()
-        dpg.add_text("Menu")
-        with dpg.group(tag="vertical-buttons"):
-            dpg.bind_item_theme("vertical-buttons", "button_theme")
-            dpg.add_button(label="Load Song", callback=load_song)
-            dpg.add_button(label="Load playlist", callback=load_playlist)
-            dpg.add_button(label="Create a playlist", callback=edit_playlist)
-        for i in player.new_playlist:
-            dpg.add_text(i)
 
 
 def create_color_scheme(color_scheme):
@@ -203,10 +200,18 @@ def update_song_name(name):
     dpg.set_value("playing_song", name)
 
 
+def play_pressed():
+    if player.current_song:
+        player.play_song()
+        if dpg.get_item_label("play_button") == "Play":
+            dpg.set_item_label("play_button", "Stop")
+        else:
+            dpg.set_item_label("play_button", "Play")
+
+
 def create_gui():
     # start of the gen
     dpg.create_context()
-
     # COLORS AND STUFF
 
     style.load_themes()
@@ -231,10 +236,11 @@ def create_gui():
                 callback=player.skip_song,
             )
             dpg.add_button(
-                label="Play/Pause",
+                tag="play_button",
+                label="Play",
                 pos=[window_width / 2 - 70, window_height - 100],
                 **config.play_button,
-                callback=player.play_song,
+                callback=play_pressed,
             )
             dpg.add_button(
                 label="Skip",
@@ -254,7 +260,7 @@ def create_gui():
             width=20,
             tag="volume_slider",
         )
-
+        create_elements()
         with dpg.handler_registry():
             dpg.add_mouse_move_handler(callback=lambda: check_hover())
 
@@ -266,7 +272,7 @@ def create_gui():
     font_path = os.path.join(script_dir, "0xProtoNerdFontPropo-Regular.ttf")
 
     with dpg.font_registry():
-        default_font = dpg.add_font(font_path, 20)
+        default_font = dpg.add_font(font_path, 15)
     window_height, window_width = (
         config.main_window["height"] + 10,
         config.main_window["width"] + 10,
