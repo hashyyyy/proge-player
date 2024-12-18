@@ -3,7 +3,6 @@ main_window = {
     "height": 211,
     "show": True,
     "no_resize": True,
-    "no_scrollbar": True,
     "no_title_bar": True,
     "autosize": False,
     "no_collapse": True,
@@ -11,8 +10,20 @@ main_window = {
     "no_close": True,
     "pos": (0, 0),
     "no_move": True,
-    "no_scroll_with_mouse": True,
 }
+
+window = {
+    "width": 150,
+    "height": 200,
+    "show": False,
+    "no_resize": True,
+    "no_scrollbar": True,
+    "autosize": False,
+    "horizontal_scrollbar": False,
+    "no_move": True,
+    "no_scroll_with_mouse": True,
+    # "modal":True
+    }
 
 text = {}
 
