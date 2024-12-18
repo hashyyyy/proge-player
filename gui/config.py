@@ -23,7 +23,7 @@ window = {
     "autosize": False,
     "horizontal_scrollbar": False,
     "no_move": True,
-    "no_scroll_with_mouse": True,
+    "no_scroll_with_mouse": False,
     "no_collapse":True
 }
 

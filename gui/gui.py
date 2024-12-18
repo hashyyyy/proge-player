@@ -4,7 +4,6 @@ from tkinter import filedialog
 import gui.config as config
 import gui.style as style
 import os
-import json
 import time
 
 # kasutame tkinteri filedialogi et lasta kasutajal mangitav fail valida
@@ -30,7 +29,7 @@ def add_to_playlist():
 
 
 def create_elements():
-    #loob vajaminevad elemendid ja peidab need alguses nahtavusest
+    # loob vajaminevad elemendid ja peidab need alguses nahtavusest
     with dpg.window(
         label="Create Playlist",
         tag="create_playlist",
@@ -48,15 +47,12 @@ def create_elements():
                 dpg.add_text(i)
 
         dpg.bind_item_theme("create_playlist_choices", "button_theme")
-        
+
     dpg.add_text("", tag="playlist_songs")
     dpg.bind_item_theme("create_playlist", "menu_theme")
 
     with dpg.window(
-        label="Load playlist",
-        tag="load_playlist",
-        **config.window,
-        pos=[7, 8]
+        label="Load playlist", tag="load_playlist", **config.window, pos=[7, 8]
     ):
         with dpg.group(tag="playlist_choices"):
             playlists = player.get_playlists()
@@ -72,7 +68,9 @@ def create_elements():
     dpg.bind_item_theme("playlist_choices", "button_theme")
     dpg.bind_item_theme("load_playlist", "menu_theme")
 
-    with dpg.window(label="Save playlist", tag="save_playlist", **config.window, pos=[7, 8]):
+    with dpg.window(
+        label="Save playlist", tag="save_playlist", **config.window, pos=[7, 8]
+    ):
         input_text_tag = dpg.add_input_text(label="")
         with dpg.group(tag="save_playlist_choices"):
             dpg.add_button(
@@ -155,81 +153,6 @@ def check_hover():
         show_volume()
 
 
-# COLOR SCHEME
-
-default_colors = {
-    "button_color": [0.1, 0.1, 0.1, 1.0],  # RGB with alpha (light blue)
-    "button_hover_color": [0.5, 0.7, 1.0, 1.0],  # Light blue hover effect
-    "background_color": [0.1, 0.1, 0.1, 1.0],  # Dark background
-    "text_color": [1.0, 1.0, 1.0, 1.0],  # White text
-    "slider_color": [0.2, 0.1, 1.0, 1.0],  # Light slider color
-}
-
-config_file = "colors.json"
-
-
-def load_color_scheme():
-    if os.path.exists(config_file):
-        with open(config_file, "r") as f:
-            color_scheme = json.load(f)
-    else:
-        color_scheme = default_colors
-    return color_scheme
-
-
-def create_color_scheme(color_scheme):
-
-    with dpg.theme() as global_theme:
-        with dpg.theme_component(dpg.mvAll):
-            # Background color
-            dpg.add_theme_color(
-                dpg.mvThemeCol_WindowBg,
-                color_scheme["background_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-            dpg.add_theme_color(
-                dpg.mvThemeCol_ChildBg,
-                color_scheme["background_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-
-            # Button colors
-            dpg.add_theme_color(
-                dpg.mvThemeCol_Button,
-                color_scheme["button_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-            dpg.add_theme_color(
-                dpg.mvThemeCol_ButtonHovered,
-                color_scheme["button_hover_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-            dpg.add_theme_color(
-                dpg.mvThemeCol_ButtonActive,
-                color_scheme["button_hover_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-
-            # Text color
-            dpg.add_theme_color(
-                dpg.mvThemeCol_Text,
-                color_scheme["text_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-
-            # Slider color
-            dpg.add_theme_color(
-                dpg.mvThemeCol_SliderGrab,
-                color_scheme["slider_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-            dpg.add_theme_color(
-                dpg.mvThemeCol_SliderGrabActive,
-                color_scheme["slider_color"],
-                category=dpg.mvThemeCat_Core,
-            )
-
-
 def update_song_name(name):
     dpg.set_value("playing_song", name)
 
@@ -238,7 +161,7 @@ def play_pressed():
     print(player.current_song)
     if player.current_song:
         player.play_song()
-        if dpg.get_item_label("play_button") == "[play]]":
+        if dpg.get_item_label("play_button") == "[play]":
             dpg.set_item_label("play_button", "[stop]")
         else:
             dpg.set_item_label("play_button", "[play]")
@@ -295,7 +218,9 @@ def create_gui():
 
         # bind theme to menu
         dpg.bind_item_theme("closed_menu", "closed_menu_theme")
-        dpg.add_text(pos=(75,125), tag="progress_bar",default_value="[--------------------]")
+        dpg.add_text(
+            pos=(75, 125), tag="progress_bar", default_value="[--------------------]"
+        )
 
         title = dpg.add_text(
             tag="playing_song",
@@ -382,8 +307,8 @@ def create_gui():
         pr = player.percentage_played(player.song_length)
         # dpg.delete_item(drawlist_id, children_only=True)
         if pr:
-            pr = round(pr*20)
-            val = str("[" + pr*"*" + (20-pr)*"-" + "]")
+            pr = round(pr * 20)
+            val = str("[" + pr * "*" + (20 - pr) * "-" + "]")
             dpg.set_value("progress_bar", val)
         dpg.render_dearpygui_frame()
 
