@@ -19,6 +19,7 @@ def clear_playlist():
     global new_playlist
     new_playlist = []
 
+
 def get_playlists():
     playlists = []
     path = os.path.join(os.getcwd(), "player", "playlists")

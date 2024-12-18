@@ -10,6 +10,9 @@ main_window = {
     "no_close": True,
     "pos": (0, 0),
     "no_move": True,
+    "no_scrollbar": True,
+    "no_scroll_with_mouse": True,
+    "horizontal_scrollbar": False,
 }
 
 window = {
@@ -23,7 +26,7 @@ window = {
     "no_move": True,
     "no_scroll_with_mouse": True,
     # "modal":True
-    }
+}
 
 text = {}
 

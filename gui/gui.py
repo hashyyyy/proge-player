@@ -35,7 +35,10 @@ def create_elements():
         label="Create Playlist",
         tag="create_playlist",
         **config.window,
-        on_close=lambda: (player.clear_playlist(), dpg.set_value("playlist_songs", value="")),
+        on_close=lambda: (
+            player.clear_playlist(),
+            dpg.set_value("playlist_songs", value=""),
+        ),
     ):
         # dpg.render_dearpygui_frame()
         dpg.add_text("Music Player")
@@ -115,11 +118,14 @@ def contract_slider():
     dpg.configure_item("volume_slider", height=0)
     dpg.configure_item("volume_slider", show=False)
 
+
 def hide_volume():
     dpg.configure_item("volume_icon", show=False)
 
+
 def show_volume():
     dpg.configure_item("volume_icon", show=True)
+
 
 def check_hover():
     if dpg.is_item_hovered("volume_icon") or dpg.is_item_hovered("volume_slider"):
@@ -251,8 +257,8 @@ def create_gui():
 
         dpg.add_button(label="Menu", tag="open_menu", callback=open_menu)
         dpg.add_text(
-            tag="playing_song", 
-            default_value=player.current_song, 
+            tag="playing_song",
+            default_value=player.current_song,
             **config.text,
             pos=[10, window_height / 2],
         )
@@ -265,10 +271,11 @@ def create_gui():
                 callback=player.skip_song,
             )
             dpg.add_button(
-                label="Play/Pause",
-                pos=[window_width / 2 - 70, window_height - 100],
+                label="Play",
+                pos=[window_width / 2 - 60, window_height - 60],
                 **config.play_button,
                 callback=play_pressed,
+                tag="play_button",
             )
             dpg.add_button(
                 label="Skip",
@@ -289,8 +296,21 @@ def create_gui():
             callback=player.update_volume,
             width=0,
             tag="volume_slider",
+            show=False,
+            vertical=True,
+            format="",
         )
+
         create_elements()
+
+        dpg.bind_item_theme(slider, "slider_theme")
+
+        volume_icon = dpg.add_image(
+            "volume_icon_texture",
+            tag="volume_icon",
+            pos=[window_width - 33, 8],
+        )
+
         with dpg.handler_registry():
             dpg.add_mouse_move_handler(callback=lambda: check_hover())
 
