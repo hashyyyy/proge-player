@@ -223,6 +223,18 @@ def play_pressed():
         else:
             dpg.set_item_label("play_button", "Play")
 
+def move_text(title):
+    current_song = player.current_song
+    curr_x, curr_y = dpg.get_item_pos(title)
+    window_width = config.main_window["width"]
+    text_width = len(current_song)
+
+    new_x = curr_x + 1
+
+    if new_x > window_width:
+        new_x = 0 - text_width * 10
+
+    dpg.set_item_pos(title, (new_x, curr_y))
 
 def create_gui():
     # start of the gen
@@ -256,11 +268,12 @@ def create_gui():
         dpg.bind_item_theme(main_window, "app_theme")
 
         dpg.add_button(label="Menu", tag="open_menu", callback=open_menu)
-        dpg.add_text(
+
+        title = dpg.add_text(
             tag="playing_song",
             default_value=player.current_song,
             **config.text,
-            pos=[10, window_height / 2],
+            pos=[-40, window_height / 2],
         )
         with dpg.group(horizontal=True, tag="buttons"):
             dpg.bind_item_theme("buttons", "button_theme")
@@ -334,4 +347,11 @@ def create_gui():
     )
     dpg.setup_dearpygui()
     dpg.show_viewport()
-    dpg.start_dearpygui()
+    #dpg.start_dearpygui()
+
+    while dpg.is_dearpygui_running():
+        move_text(title)
+
+        dpg.render_dearpygui_frame()
+
+dpg.destroy_context()

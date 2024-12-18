@@ -11,7 +11,7 @@ pygame.mixer.init()
 new_playlist = []
 active_playlist = []
 volume = 0.0
-current_song = None
+current_song = ""
 playing = False
 
 
