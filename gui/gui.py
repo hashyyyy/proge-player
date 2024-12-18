@@ -295,6 +295,7 @@ def create_gui():
 
         # bind theme to menu
         dpg.bind_item_theme("closed_menu", "closed_menu_theme")
+        dpg.add_text(pos=(75,125), tag="progress_bar",default_value="[--------------------]")
 
         title = dpg.add_text(
             tag="playing_song",
@@ -308,7 +309,7 @@ def create_gui():
                 label="[skip]",
                 pos=[8, window_height - 50],
                 **config.button,
-                callback=player.skip_song,
+                callback=player.back_song,
             )
             dpg.add_button(
                 label="[stop]",
@@ -331,7 +332,7 @@ def create_gui():
             label="",
             pos=[window_width - 33, 8],
             min_value=0,
-            max_value=100,
+            max_value=50,
             default_value=default_volume,
             callback=player.update_volume,
             width=0,
@@ -378,7 +379,12 @@ def create_gui():
 
     while dpg.is_dearpygui_running():
         move_text(title)
-
+        pr = player.percentage_played(player.song_length)
+        # dpg.delete_item(drawlist_id, children_only=True)
+        if pr:
+            pr = round(pr*20)
+            val = str("[" + pr*"*" + (20-pr)*"-" + "]")
+            dpg.set_value("progress_bar", val)
         dpg.render_dearpygui_frame()
 
 
