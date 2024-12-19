@@ -18,7 +18,6 @@ main_window = {
 window = {
     "width": 200,
     "height": 193,
-    "show": False,
     "no_resize": True,
     "autosize": False,
     "horizontal_scrollbar": False,

@@ -44,6 +44,7 @@ def add_to_new_playlist(song_path):
     new_playlist.append(str(song_path).split("/")[-1])
 
 
+
 def save_playlist(name):
     # Salvestab playlisti faili laulude nimed, et playliste salvestada.
     global new_playlist
@@ -59,8 +60,9 @@ def load_song(song_path):
     global current_song, song_length
     if song_path:
         song_length = MP3(song_path).info.length
-        #splitib vastavalt opsysteemile ja votab viimase vaartuse ehk nime
-        current_song = re.split(r"\\\\|//|/|\\", song_path)[-1]
+        #Muutsin selle ara!
+        current_song= os.path.basename(song_path)
+        # current_song = re.split(r"\\\\|//|/|\\", song_path)[-1]
         gui.update_song_name(current_song)
         pygame.mixer.music.load(song_path)
         pygame.mixer.music.play()
@@ -72,7 +74,6 @@ def play_song():
         pygame.mixer.music.unpause()
         playing = True
     else:
-        print("asds")
         pygame.mixer.music.pause()
         playing = False
 
