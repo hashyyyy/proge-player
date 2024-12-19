@@ -39,7 +39,7 @@ def create_elements():
             dpg.set_value("playlist_songs", value=""),
         ),
         pos=[7, 8],
-        show=False
+        show=False,
     ):
         with dpg.group(tag="create_playlist_choices"):
             dpg.add_button(label="Load Song", callback=add_to_playlist)
@@ -52,25 +52,12 @@ def create_elements():
     dpg.add_text("", tag="playlist_songs")
     dpg.bind_item_theme("create_playlist", "menu_theme")
 
-    # with dpg.window(
-    #     label="Load playlist", tag="load_playlist", **config.window, pos=[7, 8], show=False
-    # ):
-    #     with dpg.group(tag="playlist_choices"):
-    #         playlists = player.get_playlists()
-    #         for i in playlists:
-    #             name = i.replace(".txt", "")
-    #             dpg.add_button(
-    #                 label=name,
-    #                 callback=lambda sender: (
-    #                     player.select_playlist(dpg.get_item_label(sender)),
-    #                     dpg.hide_item("load_playlist"),
-    #                 ),
-    #             )
-    # dpg.bind_item_theme("playlist_choices", "button_theme")
-    # dpg.bind_item_theme("load_playlist", "menu_theme")
-
     with dpg.window(
-        label="Save playlist", tag="save_playlist", **config.window, pos=[7, 8], show=False
+        label="Save playlist",
+        tag="save_playlist",
+        **config.window,
+        pos=[7, 8],
+        show=False,
     ):
         input_text_tag = dpg.add_input_text(label="")
         with dpg.group(tag="save_playlist_choices"):
@@ -85,13 +72,7 @@ def create_elements():
         dpg.bind_item_theme("save_playlist_choices", "button_theme")
     dpg.bind_item_theme("save_playlist", "menu_theme")
 
-    with dpg.window(
-        label="···",
-        tag="menu",
-        **config.window,
-        pos=[7, 8],
-        show=False
-    ):
+    with dpg.window(label="···", tag="menu", **config.window, pos=[7, 8], show=False):
 
         with dpg.group(tag="vertical-buttons"):
             dpg.bind_item_theme("vertical-buttons", "button_theme")
@@ -106,7 +87,6 @@ def create_playlist():
     dpg.hide_item("create_playlist")
     time.sleep(0.1)
     dpg.show_item("create_playlist")
-    
 
 
 def load_playlist():
@@ -184,13 +164,18 @@ def move_text(title):
 
         dpg.set_item_pos(title, (new_x, curr_y))
 
+
 def reload_playlists():
     try:
         dpg.delete_item("load_playlist")
     except:
         pass
     with dpg.window(
-        label="Load playlist", tag="load_playlist",**config.window, pos=[7, 8], show=True
+        label="Load playlist",
+        tag="load_playlist",
+        **config.window,
+        pos=[7, 8],
+        show=True,
     ):
         with dpg.group(tag="playlist_choices"):
             playlists = player.get_playlists()
@@ -325,12 +310,10 @@ def create_gui():
     )
     dpg.setup_dearpygui()
     dpg.show_viewport()
-    # dpg.start_dearpygui()
 
     while dpg.is_dearpygui_running():
         move_text(title)
         pr = player.percentage_played(player.song_length)
-        # dpg.delete_item(drawlist_id, children_only=True)
         if pr:
             pr = round(pr * 20)
             val = str("[" + pr * "*" + (20 - pr) * "-" + "]")

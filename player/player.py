@@ -17,6 +17,7 @@ playing = True
 song_length = ""
 last_songs = []
 
+
 def clear_playlist():
     global new_playlist
     new_playlist = []
@@ -41,8 +42,7 @@ def select_playlist(name):
 
 def add_to_new_playlist(song_path):
     global new_playlist
-    new_playlist.append(str(song_path).split("/")[-1])
-
+    new_playlist.append(os.path.basename(song_path))
 
 
 def save_playlist(name):
@@ -60,8 +60,8 @@ def load_song(song_path):
     global current_song, song_length
     if song_path:
         song_length = MP3(song_path).info.length
-        #Muutsin selle ara!
-        current_song= os.path.basename(song_path)
+        # Muutsin selle ara!
+        current_song = os.path.basename(song_path)
         # current_song = re.split(r"\\\\|//|/|\\", song_path)[-1]
         gui.update_song_name(current_song)
         pygame.mixer.music.load(song_path)
@@ -77,10 +77,12 @@ def play_song():
         pygame.mixer.music.pause()
         playing = False
 
+
 def percentage_played(song_length):
     song_pos = pygame.mixer.music.get_pos()
     if song_length and song_pos:
-        return round((song_pos/1000)/song_length,2)
+        return round((song_pos / 1000) / song_length, 2)
+
 
 def skip_song():
     global current_song, last_songs
@@ -89,6 +91,7 @@ def skip_song():
     current_song = None
     pygame.mixer.music.stop()
 
+
 def back_song():
     global current_song, last_songs, active_playlist
     if last_songs:
@@ -96,6 +99,7 @@ def back_song():
             active_playlist.append(current_song)
         current_song = last_songs.pop()
         load_song(os.path.join(os.getcwd(), "music", f"{current_song}"))
+
 
 def update_volume(sender, app_data, user_data):
     volume = app_data / 100.0
